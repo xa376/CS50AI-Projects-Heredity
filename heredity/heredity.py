@@ -139,32 +139,26 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    print("HHIII!!!!")
+    # Sets initial probability equal to 100% (nothing in consideration)
     probability = 1
-    #print(people)
+
+    # Iterates through each person, calculates the probability of their state, 
+    # then multiplies the current probability by that states probability 
     for person in people:
 
-
-
-
-
-
-
-        # Commpute probability of one gene, two genes, no genes
-        # Calculate probability of OR probability if there are parents
-        #if person in one_gene:
-        #print(people[person]["trait"])
-        #print(people[person]["mother"])
+        # Holds each persons mother and father if applicable, else holds None
         mother = people[person]["mother"]
         father = people[person]["father"]
 
-        #The order that we consider people does not matter
+        # If no mother and father, the probability of each gene is the default probability
+        # Else the probability of each gene is based on the parents genes
         if people[person]["mother"] == None and people[person]["father"] == None:
+            probNo = PROBS["gene"][0]
             probOne = PROBS["gene"][1]
             probTwo = PROBS["gene"][2]
-            probNo = PROBS["gene"][0]
-        # OR
         else:
+
+            # Calculates the probability of inheriting the first gene based on the mothers genes
             if people[mother]["name"] in two_genes:
                 probGeneOne = 1 - PROBS["mutation"]
             elif people[mother]["name"] in one_gene:
@@ -172,16 +166,8 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 probGeneOne = .5
             else:
                 probGeneOne = 0 + PROBS["mutation"]
-            probNotGeneOne = 1 - probGeneOne
-            probGeneOneNotMutate = probGeneOne - (probGeneOne * PROBS["mutation"])
-            probNotGeneOneButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneOne)
-
-            # PROB GENE ONE =
-            # PROB IS GENE 1 AND DOES NOT MUTATES
-            # OR PROB IS NOT GENE 1 AND DOES MUTATE
-
-            #probGeneOne = probGeneOneNotMutate + probNotGeneOneButMutates
-
+            
+            # Calculates the probability of inheriting the second gene based on the fathers genes
             if people[father]["name"] in two_genes:
                 probGeneTwo = 1 - PROBS["mutation"]
             elif people[father]["name"] in one_gene:
@@ -189,128 +175,34 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 probGeneTwo = .5
             else:
                 probGeneTwo = 0 + PROBS["mutation"]
-            probNotGeneTwo = 1 - probGeneTwo
-            probGeneTwoNotMutate = probGeneTwo - (probGeneTwo * PROBS["mutation"])
-            probNotGeneTwoButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneTwo) 
 
-            #probGeneTwo = probGeneTwoNotMutate + probNotGeneTwoButMutates
-    
+            # Calculates the probability of having one, two, or no genes based on the passed genes
             probOne = probGeneOne * (1 - probGeneTwo) + probGeneTwo * (1 - probGeneOne)
-            #probOne = (probGeneOne + probGeneTwo) - (probGeneOne * probGeneTwo)
             probTwo = probGeneOne * probGeneTwo
             probNo = (1 - probGeneOne) * (1 - probGeneTwo)
-            #probOne = (probGeneOne + probGeneTwo) - (probGeneOne * probGeneTwo)
-            #probTwo = probGeneOne * probGeneTwo
-            #probNo = (1 - probGeneOne) * (1 - probGeneTwo)
 
-        '''
-        # AND
-            if people[person]["mother"] == None and people[person]["father"] == None:
-                probTwo = PROBS["gene"][2]
-            else:
-                if people[person]["mother"]["gene"][2] == 1:
-                    probGeneOne = 1
-                elif people[person]["mother"]["gene"][1] == 1:
-                    probGeneOne = .5
-                else:
-                    probGeneOne = 0
-                probNotGeneOne = 1 - probGeneOne
-                probGeneOneNotMutate = probGeneOne - (probGeneOne * PROBS["mutation"])
-                probNotGeneOneButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneOne)
-
-                # PROB GENE ONE =
-                # PROB IS GENE 1 AND DOES NOT MUTATES
-                # OR PROB IS NOT GENE 1 AND DOES MUTATE
-
-                probGeneOne = probGeneOneNotMutate + probNotGeneOneButMutates
-
-                if people[person]["father"]["gene"][2] == 1:
-                    probGeneTwo = 1
-                elif people[person]["father"]["gene"][1] == 1:
-                    probGeneTwo = .5
-                else:
-                    probGeneTwo = 0
-                probNotGeneTwo = 1 - probGeneTwo
-                probGeneTwoNotMutate = probGeneTwo - (probGeneTwo * PROBS["mutation"])
-                probNotGeneTwoButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneTwo) 
-
-                probGeneTwo = probGeneTwoNotMutate + probNotGeneTwoButMutates
-
-                probTwo = probGeneOne * probGeneTwo
-
-        # No genes compute
-            if people[person]["mother"] == None and people[person]["father"] == None:
-                probTwo = PROBS["gene"][0]
-            else:
-                if people[person]["mother"]["gene"][2] == 1:
-                    probGeneOne = 1
-                elif people[person]["mother"]["gene"][1] == 1:
-                    probGeneOne = .5
-                else:
-                    probGeneOne = 0
-                probNotGeneOne = 1 - probGeneOne
-                probGeneOneNotMutate = probGeneOne - (probGeneOne * PROBS["mutation"])
-                probNotGeneOneButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneOne)
-
-                # PROB GENE ONE =
-                # PROB IS GENE 1 AND DOES NOT MUTATES
-                # OR PROB IS NOT GENE 1 AND DOES MUTATE
-
-                probGeneOne = probGeneOneNotMutate + probNotGeneOneButMutates
-
-                if people[person]["father"]["gene"][2] == 1:
-                    probGeneTwo = 1
-                elif people[person]["father"]["gene"][1] == 1:
-                    probGeneTwo = .5
-                else:
-                    probGeneTwo = 0
-                probNotGeneTwo = 1 - probGeneTwo
-                probGeneTwoNotMutate = probGeneTwo - (probGeneTwo * PROBS["mutation"])
-                probNotGeneTwoButMutates = PROBS["mutation"] - (PROBS["mutation"] * probNotGeneTwo) 
-
-                probGeneTwo = probGeneTwoNotMutate + probNotGeneTwoButMutates
-
-                probNo = (1 - probGeneOne) * (1 - probGeneTwo)
-            
-                '''
-        # Commpute if that person has trait
+        # Calculates the probability of the person having each gene and each trait 
         probNoGeneHasTrait = probNo * PROBS["trait"][0][True]
         probOneGeneHasTrait = probOne * PROBS["trait"][1][True]
         probTwoGeneHasTrait = probTwo * PROBS["trait"][2][True]
         probNoGeneNoTrait = probNo * PROBS["trait"][0][False]
         probOneGeneNoTrait = probOne * PROBS["trait"][1][False]
         probTwoGeneNoTrait = probTwo * PROBS["trait"][2][False]
-        # The probability of having the trait =
-        # the probability of having both genes and having the trait
-        # OR the probability of having 1 gene and having the trait
-        # OR the probability of having 0 genes and having the trait
-        probHasTrait = probNoGeneHasTrait + probOneGeneHasTrait + probTwoGeneHasTrait
-        print(probability)
+
+        # Finds the state the person is in and multiplies current probability by the applicable calculation
         if person in one_gene and person in have_trait:
             probability *= probOneGeneHasTrait
-        if person in one_gene and person not in have_trait:
+        elif person in one_gene and person not in have_trait:
             probability *= probOneGeneNoTrait
-        if person in two_genes and person in have_trait:
+        elif person in two_genes and person in have_trait:
             probability *= probTwoGeneHasTrait
-        if person in two_genes and person not in have_trait:
+        elif person in two_genes and person not in have_trait:
             probability *= probTwoGeneNoTrait
-        if person not in one_gene and person not in two_genes and person in have_trait:
+        elif person not in one_gene and person not in two_genes and person in have_trait:
             probability *= probNoGeneHasTrait
-        if person not in one_gene and person not in two_genes and person not in have_trait:
+        else: # person not in one_gene and person not in two_genes and person not in have_trait
             probability *= probNoGeneNoTrait
 
-        if people[person]["name"] == "Harry" and person in one_gene and person not in have_trait:
-            print(f"Person: {person}")
-            print(probOne)
-            print(f"Chance 1 copies and no trait: {probOneGeneNoTrait}")
-
-        #print(f"Person: {person}")
-        #print(f"Chance 1 copies and no trait: {probOneGeneNoTrait}")
-        #if person in have_trait:
-         #   probability *= probHasTrait
-        #else:
-        #    probability *= 1 - probHasTrait
-    print(f"prob: {probability:.8f}")
     return probability
 
 
@@ -321,10 +213,11 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    #print(p)
-    #print(f"Probabilities: {probabilities}")
+ 
+    # For each person, updates probabilities with the passed probability p
     for person in probabilities:
-        #if in one gene two gene trait, add p to prob
+
+        # Adds p to probability of passed gene state
         if person in one_gene:
             probabilities[person]["gene"][1] += p
         elif person in two_genes:
@@ -332,8 +225,7 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
         else:
             probabilities[person]["gene"][0] += p
         
-
-
+        # Adds p to probability of passed trait state
         if person in have_trait:
             probabilities[person]["trait"][True] += p
         else:
@@ -346,23 +238,33 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
 
+    # For each person, normalizes their probabilities
     for person in probabilities:
+
+        # Gets the probability of having trait being true, and false
         probTrue = probabilities[person]["trait"][True]
         probFalse = probabilities[person]["trait"][False]
 
+        # Calculates a normalizing value, when all other values in the distribution are multiplied
+        # by this value they become normalized
         if probTrue + probFalse != 0:
             normalizeValue = 1 / (probTrue + probFalse)
 
+        # Normalizes the trait probabilities
         probabilities[person]["trait"][True] *= normalizeValue
         probabilities[person]["trait"][False] *= normalizeValue
 
+        # Gets the probability of having two, one, and no genes
         probNo = probabilities[person]["gene"][0]
         probOne = probabilities[person]["gene"][1]
         probTwo = probabilities[person]["gene"][2]
 
+        # Calculates a normalizing value, when all other values in the distribution are multiplied
+        # by this value they become normalized
         if probNo + probOne + probTwo != 0:
             normalizeValue = 1 / (probNo + probOne + probTwo)
 
+        # Normalizes the gene probabilities
         probabilities[person]["gene"][0] *= normalizeValue
         probabilities[person]["gene"][1] *= normalizeValue
         probabilities[person]["gene"][2] *= normalizeValue
